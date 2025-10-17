@@ -1,0 +1,16 @@
+[core]
+	excludesfile = /Users/johannestrepesch/.gitignore_global
+	ignorecase = false
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[init]
+	defaultBranch = main
+[includeIf "gitdir:~/dev/iteratec/"]
+  	path = .gitconfig-iteratec
+[includeIf "hasconfig:remote.*.url:**github.com**HannesT117/**"]
+	path = .gitconfig-github
+[push]
+	autoSetupRemote = true
