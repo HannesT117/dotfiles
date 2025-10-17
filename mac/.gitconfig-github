@@ -1,0 +1,6 @@
+[user]
+    signingkey = 1B7B91FA85002B512AAE20121CB9F4E2B0BF2662 
+    name = HannesT117
+    email = 12032626+HannesT117@users.noreply.github.com
+[commit]
+    gpgsign = true
