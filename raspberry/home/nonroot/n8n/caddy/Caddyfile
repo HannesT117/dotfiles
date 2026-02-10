@@ -1,0 +1,33 @@
+{
+	http_port 8080
+	https_port 8443
+}
+
+# Public Webhooks Only
+n8n.jrdn.cx {
+    tls {
+    	dns porkbun {
+            api_key {env.PORKBUN_API_KEY}
+			api_secret_key {env.PORKBUN_API_SECRET_KEY}
+    	}
+    }
+	reverse_proxy /webhook* http://n8n:5678
+	reverse_proxy /webhook-test* http://n8n:5678
+
+	@block_non_webhooks {
+		not path /webhook* /webhook-test*
+	}
+	respond @block_non_webhooks "403 Forbidden" 403
+}
+
+# Home network
+pi5.local {
+	reverse_proxy n8n:5678 {
+		flush_interval -1
+	}
+}
+
+# Private Access via Tailscale
+n8n-server-caddy.[YOUR_TAILNET].ts.net {
+	reverse_proxy http://n8n:5678
+}

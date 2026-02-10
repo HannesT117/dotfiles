@@ -1,0 +1,93 @@
+services:
+  caddy:
+    build:
+      context: .
+      dockerfile: ./caddy/Dockerfile
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - caddy_data:/data
+      - ./caddy/config:/config
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      # - ./tailscale/tmp/tailscaled.sock:/var/run/tailscale/tailscaled.sock
+    networks:
+      - caddy
+
+  # tailscale:
+  #   image: tailscale/tailscale
+  #   container_name: tailscale
+  #   restart: unless-stopped
+  #   network_mode: "host" # Required for Tailscale to function
+  #   volumes:
+  #     - /dev/net/tun:/dev/net/tun
+  #     - ./tailscale/varlib:/var/lib
+  #     - ./tailscale/tmp:/tmp
+  #   environment:
+  #     - TS_AUTHKEY=${TAILSCALE_AUTH_KEY} # Automatically authenticate Tailscale
+  #     - TS_STATE_DIR=/var/lib/tailscale
+
+  ddns-updater:
+    image: qmcgaw/ddns-updater
+    container_name: ddns-updater
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - 9000:9000/tcp
+    volumes:
+      - ./ddns/data:/updater/data
+    environment:
+      - CONFIG=/run/secrets/ddns_config
+      - PERIOD=5m
+      - UPDATE_COOLDOWN_PERIOD=5m
+      - PUBLICIP_HTTP_PROVIDERS=nnev
+      - PUBLICIPV4_HTTP_PROVIDERS=nnev
+      - PUBLICIPV6_HTTP_PROVIDERS=nnev
+      - PUBLICIP_DNS_PROVIDERS=all
+      - PUBLICIP_DNS_TIMEOUT=3s
+      - HTTP_TIMEOUT=10s
+      # Web UI
+      - LISTENING_ADDRESS=:9000
+    secrets:
+      - ddns_config
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=${N8N_PORT}
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_TELEMETRY_ENABLED=false
+      - WEBHOOK_URL=http://${PUBLIC_DOMAIN}:5678/
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - NODE_ENV=production
+      # Flags coming up on startup
+      - N8N_USER_MANAGEMENT_DISABLED=true
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+      - DB_SQLITE_POOL_SIZE=1
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./local-files:/files
+    networks:
+      - caddy
+    # network_mode: service:tailscale
+    # depends_on:
+    #   - tailscale
+
+volumes:
+  n8n_storage:
+  caddy_data:
+
+networks:
+  caddy:
+
+secrets:
+  ddns_config:
+    file: ddns_config.txt
