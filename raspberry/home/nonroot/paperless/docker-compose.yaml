@@ -55,4 +55,4 @@ volumes:
 
 secrets:
   PAPERLESS_SECRET_KEY:
-    file: ./secrets
+    file: ./paperless-secret-key.txt
