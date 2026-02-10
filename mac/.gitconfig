@@ -10,7 +10,7 @@
 	defaultBranch = main
 [includeIf "gitdir:~/dev/iteratec/"]
   	path = .gitconfig-iteratec
-[includeIf "hasconfig:remote.*.url:**github.com**HannesT117/**"]
+[includeIf "hasconfig:remote.*.url:git@hannest117.github.com:*/**"]
 	path = .gitconfig-github
 [push]
 	autoSetupRemote = true

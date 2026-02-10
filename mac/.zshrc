@@ -3,7 +3,7 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH" # for grep
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/johannestrepesch/.oh-my-zsh"
+export ZSH=~/.oh-my-zsh
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -122,3 +122,11 @@ eval $(thefuck --alias)
 
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export GPG_TTY=$(tty)
+
+# pnpm
+export PNPM_HOME=~/Library/pnpm
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
