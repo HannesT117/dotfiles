@@ -8,4 +8,13 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew bundle
 
-stow .
+git clone https://github.com/HannesT117/dotfiles
+cd dotfiles
+sudo stow -t ~ mac
+cd -
+
+# Enable Touch ID for sudo
+sed "s/^#auth/auth/" /etc/pam.d/sudo_local.template | sudo tee /etc/pam.d/sudo_local
+
+# Start mail sync
+launchctl load Library/LaunchAgents/dev.trepesch.mailsync.plist

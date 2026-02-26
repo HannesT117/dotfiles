@@ -13,6 +13,7 @@ brew "git-lfs"
 brew "gnupg"
 brew "grep"
 brew "imageoptim"
+brew "isync", restart_service: :changed
 brew "mise"
 brew "ollama", restart_service: :changed
 brew "pinentry-mac"

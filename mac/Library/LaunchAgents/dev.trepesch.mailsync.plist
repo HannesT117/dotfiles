@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>dev.trepesch.mailsync</string>
+    <key>KeepAlive</key>
+    <false/>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/sh</string>
+	<string>-c</string>
+	<string>exec $HOME/bin/sync-mails.sh</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>HOME</key>
+      <string>/Users/johannes</string>
+      <key>PATH</key>
+      <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    <key>StartInterval</key>
+    <integer>15</integer>
+    <key>StandardErrorPath</key>
+    <string>/Users/johannes/tmp/local.job.err</string>
+    <key>StandardOutPath</key>
+    <string>/Users/johannes/tmp/local.job.out</string> 
+  </dict>
+</plist>

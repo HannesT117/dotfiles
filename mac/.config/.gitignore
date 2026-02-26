@@ -1,0 +1,7 @@
+*/*
+!.gitignore
+!*.conf
+!config*
+!*rc
+!settings.*
+!mailcap

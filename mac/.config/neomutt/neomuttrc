@@ -1,0 +1,62 @@
+set realname = "Johannes Jordan"
+
+set mail_check = 5
+set mail_check_stats = yes
+set mail_check_stats_interval = 5
+set mail_check_recent = yes
+
+# RECEIVE / IMAP
+set imap_user = johannes@jrdn.cx
+set imap_pass = `echo $my_pass`
+set folder = imap://crommelin.uberspace.de:143
+set imap_check_subscribed
+unset imap_passive # Allow Mutt to open a new IMAP connection automatically.
+set imap_keepalive = 300 # Keep the IMAP connection alive by polling intermittently (time in seconds).
+
+# SENT / SMTP
+set record = +Sent
+set from = $imap_user
+set smtp_pass = $imap_pass
+set ssl_force_tls = yes
+set smtp_url = smtp://$imap_user@crommelin.uberspace.de:587
+set ssl_starttls = yes
+set smtp_authenticators = "login"
+alternates (johannes|web\+.*)@jrdn\.cx (johannes|web\+.*)@trepesch\.dev
+set reverse_name = yes
+set sendmail = "msmtp -a uberspace"
+
+# FOLDERS
+set mbox_type = Maildir
+set folder = "~/Maildir/uberspace"
+mailboxes `find ~/Maildir/uberspace -type d -name cur | xargs dirname | xargs`
+set spoolfile = "+INBOX"
+set record = "+Sent"
+set postponed = "+.Drafts"
+set mbox = "+.Archive"
+set trash = "+Trash"
+
+# CACHE
+set header_cache = ~/.mutt/cache # Store message headers locally to speed things up.
+set message_cachedir = "~/.mutt/cache" # Store messages locally to speed things up, like searching message bodies.
+
+# SIDEBAR
+set sidebar_visible
+set sidebar_short_path
+set sidebar_delim_chars = "/"
+set sidebar_folder_indent
+
+# THREADS
+set use_threads=threads sort=last-date sort_aux=date
+
+# MISC
+set mailcap_path = "~/.config/neomutt/mailcap"
+
+# NOTMUCH
+set nm_config_file = "~/.notmuch-config"
+set nm_query_window_enable = no  # Disables time-window filtering
+set nm_query_type = messages    # Shows individual messages (not threads)
+# https://notmuchmail.org/notmuch-mutt/
+# 'L' performs a notmuch query, showing only the results
+bind index,pager X vfolder-from-query
+# 'a' shows all messages again (supersedes default <alias> binding)
+macro index a "<limit>all\n" "show all messages (undo limit)"
