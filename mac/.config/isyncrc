@@ -1,0 +1,26 @@
+# === Uberspace
+
+IMAPAccount uberspace
+Host crommelin.uberspace.de
+User johannes@jrdn.cx
+PassCmd "bws secret get 5c662b9f-2192-49f8-ade7-b3f900fd3051 | jq -r '.value'" 
+TLSType IMAPS
+AuthMechs LOGIN
+# CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore uberspace-remote
+Account uberspace
+
+MaildirStore uberspace-local
+Path ~/Maildir/uberspace/
+Inbox ~/Maildir/uberspace/INBOX
+SubFolders Verbatim
+
+Channel uberspace
+Far :uberspace-remote:
+Near :uberspace-local:
+Patterns INBOX *Sent* *Drafts* *
+Create Both
+Expunge Both
+SyncState *
+Sync Full
