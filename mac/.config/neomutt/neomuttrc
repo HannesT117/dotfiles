@@ -50,6 +50,8 @@ set use_threads=threads sort=last-date sort_aux=date
 
 # MISC
 set mailcap_path = "~/.config/neomutt/mailcap"
+set pipe_decode = yes  # Decode MIME when piping (strips headers, decodes encoding)
+set wait_key = no      # Don't prompt "press any key" after external commands
 
 # NOTMUCH
 set nm_config_file = "~/.notmuch-config"
@@ -64,3 +66,5 @@ macro index a "<limit>all\n" "show all messages (undo limit)"
 # Key bindings
 macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
 macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+macro pager \Cx "<pipe-message>sed '1,/^$/d' | pbcopy<enter>" "Copy displayed text to clipboard"
+
