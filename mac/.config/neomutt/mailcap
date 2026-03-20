@@ -1,1 +1,10 @@
 application/pdf; open %s; needsterminal
+application/ics; open %s; needsterminal
+text/calendar; ~/bin/fix_ics.sh %s; needsterminal
+text/html; lynx -assume_charset=%{charset} -display_charset=utf-8 -dump -width=1024 %s; nametemplate=%s.html; copiousoutput;
+image/*;open %s; needsterminal;
+video/*; open %s; needsterminal;
+audio/*; open %s; needsterminal;
+application/zip; unzip -v %s; copiousoutput
+application/x-zip-compressed; unzip -v %s; copiousoutput
+

@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "git_panel": {
+    "tree_view": true,
+  },
   "prettier": {
     "allowed": true,
   },
@@ -41,7 +44,6 @@
     },
   },
   "agent": {
-    "always_allow_tool_actions": true,
     "default_profile": "write",
     "default_model": {
       "provider": "iteratec",

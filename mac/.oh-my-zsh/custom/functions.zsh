@@ -8,6 +8,11 @@ function f() {
   find . -name "$1"
 }
 
+# get new emails
+function whatsnew() {
+ find ~/Maildir/*/{INBOX,Spam}/new -type f -exec sh -c 'grep -h -E "^From|Subject" "$1" | paste -sd " " -' _ {} \; || echo "Nothing"
+}
+
 function find-port() {
     if ! [ $# -eq 1 ]; then
         echo "Please define the port you want to check \n $ find_port_blocker 8000"
