@@ -60,7 +60,14 @@ CASE_SENSITIVE="true"
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
+
 # HIST_STAMPS="mm/dd/yyyy"
+# HISTSIZE=5000               #How many lines of history to keep in memory
+# SAVEHIST=5000               #Number of history entries to save to disk
+HISTDUP=erase               #Erase duplicates in the history file
+setopt    appendhistory     #Append history to the history file (no overwriting)
+setopt    sharehistory      #Share history across terminals
+setopt    incappendhistory  #Immediately append to the history file, not just when a term is killed
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -104,15 +111,6 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
 eval "$(/opt/homebrew/bin/mise activate zsh)"
 
 source ~/.zsecrets
@@ -133,3 +131,9 @@ esac
 # === Bitwarden CLI ===
 export BW_SESSION="$(bw login || echo $BW_SESSION)"
 # === End Bitwarden CLI ===
+
+# === Added by LM Studio CLI (lms) ===
+export PATH="$PATH:/Users/johannes/.lmstudio/bin"
+# === End of LM Studio CLI section ===
+
+source ~/.config/ollama/env

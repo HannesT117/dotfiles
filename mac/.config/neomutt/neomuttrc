@@ -31,8 +31,8 @@ set folder = "~/Maildir/uberspace"
 mailboxes `find ~/Maildir/uberspace -type d -name cur | xargs dirname | xargs`
 set spoolfile = "+INBOX"
 set record = "+Sent"
-set postponed = "+.Drafts"
-set mbox = "+.Archive"
+set postponed = "+Drafts"
+set mbox = "+Archive"
 set trash = "+Trash"
 
 # CACHE
@@ -60,3 +60,7 @@ set nm_query_type = messages    # Shows individual messages (not threads)
 bind index,pager X vfolder-from-query
 # 'a' shows all messages again (supersedes default <alias> binding)
 macro index a "<limit>all\n" "show all messages (undo limit)"
+
+# Key bindings
+macro index,pager \cb "<pipe-message> urlscan<Enter>" "call urlscan to extract URLs out of a message"
+macro attach,compose \cb "<pipe-entry> urlscan<Enter>" "call urlscan to extract URLs out of a message"

@@ -22,6 +22,7 @@ brew "syncthing", restart_service: :changed
 brew "thefuck"
 brew "tldr"
 brew "tmux"
+brew "urlscan"
 brew "watch"
 cask "bitwarden"
 cask "calibre"

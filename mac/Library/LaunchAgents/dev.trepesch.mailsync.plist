@@ -24,8 +24,8 @@
     <key>StartInterval</key>
     <integer>15</integer>
     <key>StandardErrorPath</key>
-    <string>/Users/johannes/tmp/local.job.err</string>
+    <string>/Users/johannes/tmp/mailsync.err</string>
     <key>StandardOutPath</key>
-    <string>/Users/johannes/tmp/local.job.out</string> 
+    <string>/Users/johannes/tmp/mailsync.out</string> 
   </dict>
 </plist>

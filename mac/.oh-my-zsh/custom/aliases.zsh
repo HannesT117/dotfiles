@@ -5,6 +5,9 @@ alias cp="cp -iv"
 # use bat by default (syntax highlighting, git integration, ...)
 alias cat='bat'
 
+# use difftastic instead of diff
+alias diff='difft'
+
 # copy over kitty terminfo files when connecting via ssh
 # https://sw.kovidgoyal.net/kitty/faq/#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-or-functional-keys-like-arrow-keys-don-t-work
 alias s="kitten ssh"

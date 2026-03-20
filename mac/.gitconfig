@@ -14,3 +14,11 @@
 	path = .gitconfig-github
 [push]
 	autoSetupRemote = true
+[diff]
+    external = difft
+[alias]
+    # `git log` with patches shown with difftastic.
+    dl = -c diff.external=difft log -p --ext-diff
+
+    # Show the most recent commit with difftastic.
+    ds = -c diff.external=difft show --ext-diff
