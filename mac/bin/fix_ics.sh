@@ -1,4 +1,7 @@
 #!/bin/sh
+
+# Fixes an issue that made neomutt to not open ics in calendar app correctly
+
 # Decode base64 if needed, then fix common iCalendar issues
 if base64 -D "$1" 2>/dev/null | grep -q "BEGIN:VCALENDAR"; then
   base64 -D "$1" > /tmp/fixed.ics
