@@ -22,35 +22,6 @@
     "diagnostics": false,
     "metrics": false,
   },
-  "language_models": {
-    "openai_compatible": {
-      "iteratec": {
-        "api_url": "https://api.iteragpt.iteratec.de",
-        "available_models": [
-          {
-            "name": "aws/claude-haiku-4-5",
-            "max_tokens": 200000,
-            "max_output_tokens": 32000,
-            "max_completion_tokens": 200000,
-            "capabilities": {
-              "tools": true,
-              "images": false,
-              "parallel_tool_calls": false,
-              "prompt_cache_key": false,
-            },
-          },
-        ],
-      },
-    },
-  },
-  "agent": {
-    "default_profile": "write",
-    "default_model": {
-      "provider": "iteratec",
-      "model": "aws/claude-haiku-4-5",
-    },
-    "model_parameters": [],
-  },
   "ui_font_size": 16,
   "buffer_font_size": 15,
   "theme": {
