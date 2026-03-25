@@ -10,6 +10,7 @@ brew bundle
 
 git clone https://github.com/HannesT117/dotfiles
 cd dotfiles
+sudo stow -t ~ shared
 sudo stow -t ~ mac
 cd -
 

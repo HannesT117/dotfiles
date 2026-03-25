@@ -1,5 +1,6 @@
 set realname = "Johannes Jordan"
 
+set imap_idle = yes
 set mail_check = 5
 set mail_check_stats = yes
 set mail_check_stats_interval = 5
