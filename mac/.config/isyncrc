@@ -12,8 +12,8 @@ IMAPStore uberspace-remote
 Account uberspace
 
 MaildirStore uberspace-local
-Path ~/Maildir/uberspace/
-Inbox ~/Maildir/uberspace/INBOX
+Path ~/.Maildir/uberspace/
+Inbox ~/.Maildir/uberspace/INBOX
 SubFolders Verbatim
 
 Channel uberspace
