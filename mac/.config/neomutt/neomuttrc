@@ -28,8 +28,8 @@ set sendmail = "msmtp -a uberspace"
 
 # FOLDERS
 set mbox_type = Maildir
-set folder = "~/Maildir/uberspace"
-mailboxes `find ~/Maildir/uberspace -type d -name cur | xargs dirname | xargs`
+set folder = "~/.Maildir/uberspace"
+mailboxes `find ~/.Maildir/uberspace -type d -name cur | xargs dirname | xargs`
 set spoolfile = "+INBOX"
 set record = "+Sent"
 set postponed = "+Drafts"
