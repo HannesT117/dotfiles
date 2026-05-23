@@ -8,9 +8,14 @@ function f() {
   find . -name "$1"
 }
 
+# copy to homeserver
+function scphs() {
+  scp $1 nonroot@gmktec.local:$2
+}
+
 # get new emails
 function whatsnew() {
- find ~/Maildir/*/{INBOX,Spam}/new -type f -exec sh -c 'grep -h -E "^From|Subject" "$1" | paste -sd " " -' _ {} \; || echo "Nothing"
+ find ~/.Maildir/*/{INBOX,Spam}/new -type f -exec sh -c 'grep -h -E "^From|Subject" "$1" | paste -sd " " -' _ {} \; || echo "Nothing"
 }
 
 function find-port() {
