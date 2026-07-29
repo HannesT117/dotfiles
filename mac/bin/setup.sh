@@ -2,16 +2,19 @@
 
 cd ~
 
+git clone --sparse https://github.com/HannesT/dotfiles .dotfiles
+cd .dotfiles
+git sparse-checkout set mac shared .githooks
+git config --local core.hooksPath .githooks/
+
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 # plugins: git aws azure docker fzf jira gpg-agent keychain poetry thefuck tldr
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew bundle
 
-git clone https://github.com/HannesT117/dotfiles
-cd dotfiles
-sudo stow -t ~ shared
-sudo stow -t ~ mac
+cd .dotfiles
+sudo stow -t ~ shared mac
 cd -
 
 # Enable Touch ID for sudo

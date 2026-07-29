@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "vercel": {
+      "url": "https://mcp.vercel.com"
+    },
+    "figma-desktop": {
+        "url": "http://127.0.0.1:3845/mcp"
+      }
+  }
+}

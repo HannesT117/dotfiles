@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/opt/grep/libexec/gnubin:$PATH
+export PATH=$HOME/.bin:$HOME/bin:/usr/local/bin:/usr/local/opt/grep/libexec/gnubin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
@@ -129,7 +129,7 @@ esac
 # pnpm end
 
 # === Bitwarden CLI ===
-export BW_SESSION="$(bw login || echo $BW_SESSION)"
+# export BW_SESSION="$(bw login || echo $BW_SESSION)"
 # === End Bitwarden CLI ===
 
 # === Added by LM Studio CLI (lms) ===
@@ -137,3 +137,5 @@ export PATH="$PATH:/Users/johannes/.lmstudio/bin"
 # === End of LM Studio CLI section ===
 
 source ~/.config/ollama/env
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi

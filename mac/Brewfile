@@ -1,74 +1,192 @@
+tap "f1bonacc1/tap"
+tap "hashicorp/tap"
+tap "localstack/tap"
 tap "mongodb/brew"
+tap "muxy-app/tap"
 tap "spring-io/tap"
+# AI pair programming in your terminal
 brew "aider"
+# Official Amazon AWS command-line interface
 brew "awscli"
+# Thin wrapper around the `aws` command-line interface for use with LocalStack
+brew "awscli-local"
+# Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
-brew "bitwarden-cli"
+# Powerful, enterprise-ready, open source web server with automatic HTTPS
 brew "caddy"
-brew "cookcli"
+# CLI tool for Cloudflare Workers
+brew "cloudflare-wrangler"
+# Diff that understands syntax
 brew "difftastic"
+# Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
+# Command-line fuzzy finder written in Go
 brew "fzf"
+# Multi-agent workspace manager
+brew "gastown"
+# GitHub command-line tool
 brew "gh"
+# Distributed revision control system
 brew "git"
+# Quickly rewrite git repository history
 brew "git-filter-repo"
+# Git extension for versioning large files
 brew "git-lfs"
+# Compute various size metrics for a Git repository
+brew "git-sizer"
+# Audit git repos for secrets
 brew "gitleaks"
+# GNU Privacy Guard (OpenPGP)
 brew "gnupg"
+# GNU grep, egrep and fgrep
 brew "grep"
-brew "isync", restart_service: :changed
+# Agent multiplexer that lives in your terminal
+brew "herdr"
+# Synchronize a maildir with an IMAP server
+brew "isync"
+# Command-line note taker
 brew "jrnl"
+# Find what models run on your hardware
 brew "llmfit"
+# Curses-based tool for viewing and analyzing log files
 brew "lnav"
+# Text-based web browser
 brew "lynx"
+# Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Open source relational database management system
+brew "mysql-client"
+# Open source relational database management system
+brew "mysql-client@8.4"
+# E-mail reader with support for Notmuch, NNTP and much more
 brew "neomutt"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Create, run, and share large language models (LLMs)
 brew "ollama"
+# Development kit for the Java programming language
+brew "openjdk@17"
+# Swiss-army knife of markup format conversion
 brew "pandoc"
+# Pinentry for GPG on Mac
 brew "pinentry-mac"
+# PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
-brew "rtk"
+# Object-relational database system
+brew "postgresql@17", link: true
+# CLI for PlanetScale Database
+brew "pscale"
+# Cloud native development platform
+brew "pulumi"
+# Swiss army knife for Pulumi development
+brew "pulumictl"
+# Persistent key-value database, with built-in net interface
+brew "redis"
+# Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
+# Open source continuous file synchronization application
 brew "syncthing", restart_service: :changed
+# Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale", restart_service: :changed
+# Programmatically correct mistyped console commands
 brew "thefuck"
+# Simplified and community-driven man pages
 brew "tldr"
+# Terminal multiplexer
 brew "tmux"
-brew "typst"
+# Code review TUI with vim keybindings
+brew "tuicr"
+# View/select the URLs in an email message or file
 brew "urlscan"
+# Executes a program periodically, showing output fullscreen
 brew "watch"
+# CLI for Git worktree management, designed for parallel AI agent workflows
+brew "worktrunk"
+# Generate your Xcode project from a spec file and your folder structure
 brew "xcodegen"
+# Terraform
+brew "hashicorp/tap/terraform", trusted: true
+# Localstack cli packaged using pyinstaller
+brew "localstack/tap/localstack-cli", trusted: true
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Command-line interface for 1Password
+cask "1password-cli"
+# GraphQL client
 cask "altair-graphql-client"
+# Tool to flash OS images to SD cards & USB drives
 cask "balenaetcher"
-cask "bitwarden"
+# Display management tool
+cask "betterdisplay"
+# Web security testing toolkit
 cask "burp-suite"
-cask "calibre"
+# Anthropic's official Claude AI desktop app
 cask "claude"
+# Terminal-based AI coding assistant
 cask "claude-code"
+# Ghostty-based terminal with vertical tabs and notifications for AI coding agents
+cask "cmux"
+# Tool to show live information about the batteries in various devices
 cask "coconutbattery"
-cask "comet"
-cask "emclient"
+# OpenAI's coding agent that runs in your terminal
+cask "codex"
+# Write, edit, and chat about your code with AI
+cask "cursor"
+# Universal database tool and SQL client
+cask "dbeaver-community"
+# Web browser
 cask "firefox"
-cask "garmin-express"
+# Web browser
 cask "google-chrome"
+# Speech to text application
+cask "handy"
+# Tool to optimise images to a smaller size
 cask "imageoptim"
+# Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# GPU-based terminal emulator
 cask "kitty"
+# Discover, download, and run local LLMs
 cask "lm-studio"
-cask "mactex"
+# Meeting transcription and analysis application
+cask "meetily"
+# Interactive tool for analyzing MongoDB data
 cask "mongodb-compass"
+# Terminal multiplexer for macOS
+cask "muxy-app/tap/muxy", trusted: true
+# VPN client for secure internet access and private browsing
 cask "nordvpn"
+# App to write, plan, collaborate, and get organised
+cask "notion"
+# Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Replacement for Docker Desktop
 cask "orbstack"
+# WebKit based web browser
 cask "orion"
+# Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
+# Emoji picker optimised for blind people
 cask "rocket"
-cask "signal"
+# Team communication and collaboration software
+cask "slack"
+# Native GUI tool for relational databases
+cask "tableplus"
+# Open-source code editor
 cask "visual-studio-code"
+# Multimedia player
 cask "vlc"
+# Multiplayer code editor
 cask "zed"
+# Video communication and virtual meeting platform
 cask "zoom"
 vscode "anthropic.claude-code"
+vscode "cweijan.dbclient-jdbc"
+vscode "cweijan.vscode-mysql-client2"
 vscode "dbaeumer.vscode-eslint"
+vscode "eamodio.gitlens"
 vscode "esbenp.prettier-vscode"
+vscode "figma.figma-vscode-extension"
+vscode "oxc.oxc-vscode"
 vscode "rooveterinaryinc.roo-cline"
+npm "corepack"
