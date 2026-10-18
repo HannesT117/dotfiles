@@ -23,5 +23,7 @@ cd ~
 # Enable Touch ID for sudo
 sed "s/^#auth/auth/" /etc/pam.d/sudo_local.template | sudo tee /etc/pam.d/sudo_local
 
-# Start mail sync
-launchctl load Library/LaunchAgents/dev.trepesch.mailsync.plist
+# Start launch agents (mailsync is loaded manually once mail is configured)
+for agent in brew fetch tldr; do
+  launchctl load Library/LaunchAgents/dev.trepesch.$agent.plist
+done
