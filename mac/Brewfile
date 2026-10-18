@@ -130,8 +130,6 @@ cask "cmux"
 cask "coconutbattery"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
-# Write, edit, and chat about your code with AI
-cask "cursor"
 # Universal database tool and SQL client
 cask "dbeaver-community"
 # Web browser
