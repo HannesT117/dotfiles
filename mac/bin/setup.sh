@@ -17,7 +17,7 @@ cd $DOT_FOLDER/mac
 brew bundle
 
 cd $DOT_FOLDER
-sudo stow -t ~ shared mac
+stow -t ~ shared mac
 cd ~
 
 # Enable Touch ID for sudo
