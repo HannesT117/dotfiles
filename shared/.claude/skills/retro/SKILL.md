@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Run a short retro on the current session - what went well, where Claude struggled, what to change - and turn the outcome into rules or memory. Use when the user asks for a retro, runs /retro, or the retro Stop hook fires.
+description: Run a short retro on the current session - what went well, where Claude struggled, what to change - and turn the outcome into rules or memory. Use when the user asks for a retro or runs /retro.
 ---
 
 # Session Retro

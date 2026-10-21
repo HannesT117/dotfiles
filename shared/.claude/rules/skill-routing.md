@@ -33,10 +33,10 @@ Trigger these proactively — don't wait to be asked, and don't re-derive what a
 
 ## Review
 
-- Reviewing a diff before finishing → `/code-review` (the Stop hook enforces this once per session;
-  the logic-critic and architecture-critic agents run alongside it).
+- Reviewing a diff before finishing → `/code-review`; the logic-critic and architecture-critic
+  agents run alongside it.
 
 ## Retro
 
-- End of a substantial session → `/retro` (a Stop hook prompts for this once per session, after
-  `/code-review` has had its turn). Bring your own read of the session before asking anything.
+- End of a substantial session → `/retro`, after `/code-review` has had its turn. Bring your own
+  read of the session before asking anything.
