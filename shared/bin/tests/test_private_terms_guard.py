@@ -63,6 +63,26 @@ def test_normalise_strips_trailing_point_zero():
     assert normalise("5.0") == "5"
 
 
+def test_normalise_unifies_english_and_german_decimals():
+    forms = ["1,234.56", "1.234,56", "1234.56", "1234,56", "1_234.56"]
+    assert len({normalise("x " + f) for f in forms}) == 1
+
+
+def test_normalise_unifies_whole_amounts_across_locales():
+    forms = ["1,234.00", "1.234,00", "1234", "1234,0"]
+    assert len({normalise(f) for f in forms}) == 1
+
+
+def test_normalise_keeps_thousands_groups_of_zeros():
+    assert normalise("1,000") == "1000"
+
+
+def test_german_amount_matches_english_term(tmp_path):
+    (tmp_path / "terms").write_text("1234.56\n")
+    terms = load_terms(tmp_path / "terms")
+    assert find_hits("Miete 1.234,56 EUR", terms) == [1]
+
+
 def test_find_hits_reports_line_numbers():
     assert find_hits("a\nfoo 98,765\nb", ["98765"]) == [2]
 
@@ -173,3 +193,55 @@ def test_empty_list_blocks_with_message(tmp_path):
     result = run_guard(["pre-commit"], repo, terms)
     assert result.returncode == 1
     assert "term list is empty" in output(result)
+
+
+def test_pre_commit_blocks_added_line_that_looks_like_a_file_header(tmp_path):
+    repo = tmp_path / "repo"
+    init_repo(repo)
+    terms = tmp_path / "terms"
+    terms.write_text("zebrafish\n")
+    (repo / "notes.txt").write_text("ok\n++ zebrafish here\n")
+    git(repo, "add", "notes.txt")
+    result = run_guard(["pre-commit"], repo, terms)
+    assert result.returncode == 1
+    assert "zebrafish" not in output(result).lower()
+
+
+def test_pre_commit_does_not_print_term_bearing_path(tmp_path):
+    repo = tmp_path / "repo"
+    init_repo(repo)
+    terms = tmp_path / "terms"
+    terms.write_text("zebrafish\n")
+    (repo / "my zebrafish.txt").write_text("zebrafish\n")
+    git(repo, "add", "my zebrafish.txt")
+    result = run_guard(["pre-commit"], repo, terms)
+    assert result.returncode == 1
+    assert "zebrafish" not in output(result).lower()
+
+
+def test_pre_commit_blocks_term_in_file_name_with_clean_content(tmp_path):
+    repo = tmp_path / "repo"
+    init_repo(repo)
+    terms = tmp_path / "terms"
+    terms.write_text("zebrafish\n")
+    (repo / "my zebrafish.txt").write_text("nothing\n")
+    git(repo, "add", "my zebrafish.txt")
+    result = run_guard(["pre-commit"], repo, terms)
+    assert result.returncode == 1
+    assert "zebrafish" not in output(result).lower()
+    assert "file name" in output(result)
+
+
+def test_pre_push_blocks_term_in_file_name_with_clean_content(tmp_path):
+    repo = tmp_path / "repo"
+    init_repo(repo)
+    terms = tmp_path / "terms"
+    terms.write_text("zebrafish\n")
+    (repo / "zebrafish.txt").write_text("clean\n")
+    git(repo, "add", "zebrafish.txt")
+    git(repo, "commit", "-q", "-m", "add a")
+    sha = git(repo, "rev-parse", "HEAD").strip()
+    line = "refs/heads/main %s refs/heads/main %s\n" % (sha, "0" * 40)
+    result = run_guard(["pre-push"], repo, terms, stdin=line)
+    assert result.returncode == 1
+    assert "file name" in output(result)

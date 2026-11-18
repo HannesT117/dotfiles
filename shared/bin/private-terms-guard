@@ -17,8 +17,9 @@ DEFAULT_TERMS_FILE = Path.home() / ".local" / "share" / "private-terms"
 DATA_EXTENSIONS = (".sqlite", ".db", ".numbers", ".csv", ".xlsx")
 ZERO_SHA = "0" * 40
 
-_DIGIT_RUN = re.compile(r"\d(?:[\d,_ ]*\d)?")
-_TRAILING_ZEROS = re.compile(r"(\d)\.0{1,2}(?!\d)")
+_DIGIT_RUN = re.compile(r"\d(?:[\d,._ ]*\d)?")
+_DECIMAL_ZEROS = re.compile(r"[.,]0{1,2}$")
+_NUMBER_SEPARATORS = re.compile(r"[,._ ]")
 _HUNK = re.compile(r"^@@ -\S+ \+(\d+)")
 
 
@@ -28,9 +29,11 @@ def fail(message):
 
 
 def normalise(text):
-    text = text.lower()
-    text = _DIGIT_RUN.sub(lambda m: re.sub(r"[,_ ]", "", m.group(0)), text)
-    return _TRAILING_ZEROS.sub(r"\1", text)
+    return _DIGIT_RUN.sub(_normalise_number, text.lower())
+
+
+def _normalise_number(match):
+    return _NUMBER_SEPARATORS.sub("", _DECIMAL_ZEROS.sub("", match.group(0)))
 
 
 def _clean_git_env():
@@ -97,15 +100,31 @@ def _report_text(label, text, terms):
 def _added_lines(diff):
     path = None
     line_no = 0
+    in_header = False
     for raw in diff.splitlines():
-        if raw.startswith("+++ "):
+        if raw.startswith("diff --git "):
+            in_header = True
+            path = None
+        elif in_header and raw.startswith("+++ "):
             path = None if raw == "+++ /dev/null" else raw[6:]
         elif raw.startswith("@@"):
+            in_header = False
             match = _HUNK.match(raw)
             line_no = int(match.group(1)) if match else 0
-        elif raw.startswith("+") and path is not None:
+        elif not in_header and raw.startswith("+") and path is not None:
             yield path, line_no, raw[1:]
             line_no += 1
+
+
+def _path_problems(paths, terms, noun):
+    problems = []
+    for path in paths:
+        number = _first_match(path, terms)
+        if number is not None:
+            problems.append("%s name deny-listed term #%d" % (noun, number))
+        elif blocked_paths([path]):
+            problems.append("%s: data file" % path)
+    return problems
 
 
 def check_pre_commit(terms):
@@ -114,9 +133,10 @@ def check_pre_commit(terms):
     for path, line_no, content in _added_lines(diff):
         number = _first_match(content, terms)
         if number is not None:
-            problems.append("%s:%d deny-listed term #%d" % (path, line_no, number))
-    names = _git("-c", "core.quotepath=off", "diff", "--cached", "--name-only", "--diff-filter=d")
-    problems += ["%s: data file" % p for p in blocked_paths(names.splitlines())]
+            label = "a staged file" if _first_match(path, terms) is not None else path
+            problems.append("%s:%d deny-listed term #%d" % (label, line_no, number))
+    names = _git("diff", "--cached", "--name-only", "-z", "--diff-filter=d")
+    problems += _path_problems([n for n in names.split("\0") if n], terms, "a staged file")
     return problems
 
 
@@ -148,10 +168,8 @@ def check_pre_push(terms, stdin):
             number = _first_match(line, terms)
             if number is not None:
                 problems.append("commit %s line %d deny-listed term #%d" % (commit, index - offset, number))
-        names = _git(
-            "-c", "core.quotepath=off", "log", "--name-only", "--format=", "--diff-filter=d", *revisions
-        )
-        problems += ["%s: data file" % p for p in blocked_paths(names.splitlines())]
+        names = _git("log", "--name-only", "-z", "--format=", "--diff-filter=d", *revisions)
+        problems += _path_problems([n.strip("\n") for n in names.split("\0") if n.strip("\n")], terms, "a pushed file")
     return problems
 
 
