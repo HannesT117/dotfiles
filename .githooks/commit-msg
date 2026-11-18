@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ~/dotfiles/shared/bin/private-terms-guard commit-msg "$@"

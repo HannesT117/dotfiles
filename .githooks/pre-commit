@@ -1,3 +1,5 @@
 #!/bin/sh
 
+~/dotfiles/shared/bin/private-terms-guard pre-commit "$@" || exit 1
+
 npx @secretlint/quick-start "**/*"
