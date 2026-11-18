@@ -83,7 +83,6 @@ plugins=(
     jira
     gpg-agent
     keychain
-    thefuck
     tldr
     tmux
     zsh-autosuggestions
@@ -113,7 +112,8 @@ fi
 
 if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi
 
-if command -v thefuck >/dev/null 2>&1; then eval "$(thefuck --alias)"; fi
+export _PR_AI_DISABLE=1
+if command -v pay-respects >/dev/null 2>&1; then eval "$(pay-respects zsh --alias fuck)"; fi
 
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export GPG_TTY=$(tty)

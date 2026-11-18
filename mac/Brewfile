@@ -4,6 +4,7 @@ tap "localstack/tap"
 tap "mongodb/brew"
 tap "muxy-app/tap"
 tap "spring-io/tap"
+tap "timescam/homebrew-tap"
 # AI pair programming in your terminal
 brew "aider"
 # Official Amazon AWS command-line interface
@@ -89,7 +90,7 @@ brew "syncthing", restart_service: :changed
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale", restart_service: :changed
 # Programmatically correct mistyped console commands
-brew "thefuck"
+brew "timescam/homebrew-tap/pay-respects"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
