@@ -1,9 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/.bin:$HOME/bin:/usr/local/bin:/usr/local/opt/grep/libexec/gnubin:$PATH
 
-# Path to your oh-my-zsh installation.
-export ZSH=~/.oh-my-zsh
-
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -92,7 +89,10 @@ plugins=(
     zsh-autosuggestions
     )
 
-source $ZSH/oh-my-zsh.sh
+if ! (( $+functions[omz] )) && [[ -f ~/.oh-my-zsh/oh-my-zsh.sh ]]; then
+    export ZSH=~/.oh-my-zsh
+    source $ZSH/oh-my-zsh.sh
+fi
 
 # User configuration
 
@@ -111,31 +111,11 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-eval "$(/opt/homebrew/bin/mise activate zsh)"
+if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi
 
-source ~/.zsecrets
-
-eval $(thefuck --alias)
+if command -v thefuck >/dev/null 2>&1; then eval "$(thefuck --alias)"; fi
 
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 export GPG_TTY=$(tty)
-
-# pnpm
-export PNPM_HOME=~/Library/pnpm
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-# === Bitwarden CLI ===
-# export BW_SESSION="$(bw login || echo $BW_SESSION)"
-# === End Bitwarden CLI ===
-
-# === Added by LM Studio CLI (lms) ===
-export PATH="$PATH:/Users/johannes/.lmstudio/bin"
-# === End of LM Studio CLI section ===
-
-source ~/.config/ollama/env
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
