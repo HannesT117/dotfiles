@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+"""Blocks commits and pushes that contain deny-listed personal terms or data files.
+
+Usage: private-terms-guard {pre-commit | commit-msg <file> | pre-push}
+
+The term list lives outside every repository (default ~/.local/share/private-terms,
+override with PRIVATE_TERMS_FILE). Matched terms are never printed, only their position
+and their number in the list. The guard fails closed: a missing or empty list blocks.
+"""
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+DEFAULT_TERMS_FILE = Path.home() / ".local" / "share" / "private-terms"
+DATA_EXTENSIONS = (".sqlite", ".db", ".numbers", ".csv", ".xlsx")
+ZERO_SHA = "0" * 40
+
+_DIGIT_RUN = re.compile(r"\d(?:[\d,_ ]*\d)?")
+_TRAILING_ZEROS = re.compile(r"(\d)\.0{1,2}(?!\d)")
+_HUNK = re.compile(r"^@@ -\S+ \+(\d+)")
+
+
+def fail(message):
+    print("private-terms-guard: " + message, file=sys.stderr)
+    raise SystemExit(1)
+
+
+def normalise(text):
+    text = text.lower()
+    text = _DIGIT_RUN.sub(lambda m: re.sub(r"[,_ ]", "", m.group(0)), text)
+    return _TRAILING_ZEROS.sub(r"\1", text)
+
+
+def _clean_git_env():
+    return {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+
+
+def _inside_work_tree(directory):
+    result = subprocess.run(
+        ["git", "-C", str(directory), "rev-parse", "--show-toplevel"],
+        capture_output=True,
+        env=_clean_git_env(),
+    )
+    return result.returncode == 0
+
+
+def load_terms(path):
+    path = Path(path)
+    if not path.is_file():
+        fail("term list is missing")
+    if _inside_work_tree(path.resolve().parent):
+        fail("term list must live outside any git work tree")
+    terms = [normalise(line.strip()) for line in path.read_text().splitlines() if line.strip()]
+    if not terms:
+        fail("term list is empty")
+    return terms
+
+
+def _first_match(line, terms):
+    haystack = normalise(line)
+    for number, term in enumerate(terms, start=1):
+        if term in haystack:
+            return number
+    return None
+
+
+def find_hits(text, terms):
+    return [
+        index
+        for index, line in enumerate(text.splitlines(), start=1)
+        if _first_match(line, terms) is not None
+    ]
+
+
+def blocked_paths(paths):
+    return [p for p in paths if p.lower().endswith(DATA_EXTENSIONS)]
+
+
+def _git(*args):
+    result = subprocess.run(["git", *args], capture_output=True)
+    if result.returncode != 0:
+        fail("git %s failed" % args[0])
+    return result.stdout.decode("utf-8", errors="replace")
+
+
+def _report_text(label, text, terms):
+    problems = []
+    for index, line in enumerate(text.splitlines(), start=1):
+        number = _first_match(line, terms)
+        if number is not None:
+            problems.append("%s:%d deny-listed term #%d" % (label, index, number))
+    return problems
+
+
+def _added_lines(diff):
+    path = None
+    line_no = 0
+    for raw in diff.splitlines():
+        if raw.startswith("+++ "):
+            path = None if raw == "+++ /dev/null" else raw[6:]
+        elif raw.startswith("@@"):
+            match = _HUNK.match(raw)
+            line_no = int(match.group(1)) if match else 0
+        elif raw.startswith("+") and path is not None:
+            yield path, line_no, raw[1:]
+            line_no += 1
+
+
+def check_pre_commit(terms):
+    problems = []
+    diff = _git("-c", "core.quotepath=off", "diff", "--cached", "-U0", "--no-color", "--no-ext-diff")
+    for path, line_no, content in _added_lines(diff):
+        number = _first_match(content, terms)
+        if number is not None:
+            problems.append("%s:%d deny-listed term #%d" % (path, line_no, number))
+    names = _git("-c", "core.quotepath=off", "diff", "--cached", "--name-only", "--diff-filter=d")
+    problems += ["%s: data file" % p for p in blocked_paths(names.splitlines())]
+    return problems
+
+
+def check_commit_msg(terms, message_file):
+    text = Path(message_file).read_text(errors="replace")
+    return _report_text("commit message", text, terms)
+
+
+def check_pre_push(terms, stdin):
+    problems = []
+    for entry in stdin.splitlines():
+        parts = entry.split()
+        if len(parts) != 4:
+            continue
+        _, local_sha, _, remote_sha = parts
+        if local_sha == ZERO_SHA:
+            continue
+        if remote_sha == ZERO_SHA:
+            revisions = [local_sha, "--not", "--remotes"]
+        else:
+            revisions = ["%s..%s" % (remote_sha, local_sha)]
+        patch = _git("-c", "core.quotepath=off", "log", "-p", "--no-color", "--no-ext-diff", *revisions)
+        commit = "?"
+        offset = 0
+        for index, line in enumerate(patch.splitlines(), start=1):
+            if line.startswith("commit ") and len(line) >= 47:
+                commit = line[7:15]
+                offset = index - 1
+            number = _first_match(line, terms)
+            if number is not None:
+                problems.append("commit %s line %d deny-listed term #%d" % (commit, index - offset, number))
+        names = _git(
+            "-c", "core.quotepath=off", "log", "--name-only", "--format=", "--diff-filter=d", *revisions
+        )
+        problems += ["%s: data file" % p for p in blocked_paths(names.splitlines())]
+    return problems
+
+
+def main(argv):
+    if not argv or argv[0] not in ("pre-commit", "commit-msg", "pre-push"):
+        fail("usage: private-terms-guard {pre-commit | commit-msg <file> | pre-push}")
+    mode = argv[0]
+    terms = load_terms(Path(os.environ.get("PRIVATE_TERMS_FILE") or DEFAULT_TERMS_FILE))
+    if mode == "pre-commit":
+        problems = check_pre_commit(terms)
+    elif mode == "commit-msg":
+        if len(argv) < 2:
+            fail("commit-msg needs the message file")
+        problems = check_commit_msg(terms, argv[1])
+    else:
+        problems = check_pre_push(terms, sys.stdin.read())
+    if problems:
+        for problem in problems:
+            print("private-terms-guard: blocked: " + problem, file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

@@ -12,3 +12,9 @@ known_hosts
 known_hosts.old
 
 mac/Claude/
+
+*.sqlite
+*.db
+*.numbers
+*.csv
+*.xlsx
